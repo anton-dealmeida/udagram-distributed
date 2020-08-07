@@ -38,7 +38,7 @@ jobs:
         - docker tag $DOCKER_USERNAME/udacity-frontend $DOCKER_USERNAME/udacity-frontend:$TRAVIS_BRANCH     
       after_script:
         # Push all images to Docker Hub
-        - docker push $DOCKER_USERNAME/reverseproxy:$TRAVIS_BRANCH
-        - docker push $DOCKER_USERNAME/udacity-restapi-user:$TRAVIS_BRANCH
-        - docker push $DOCKER_USERNAME/udacity-restapi-feed:$TRAVIS_BRANCH
-        - docker push $DOCKER_USERNAME/udacity-frontend:$TRAVIS_BRANCH
+        - docker push $DOCKER_USERNAME/reverseproxy
+        - docker push $DOCKER_USERNAME/udacity-restapi-user
+        - docker push $DOCKER_USERNAME/udacity-restapi-feed
+        - docker push $DOCKER_USERNAME/udacity-frontend
