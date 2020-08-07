@@ -7,7 +7,7 @@ data:
   JWT_SECRET: test123
   POSTGRESS_DB: udagramdealmeidadev
   POSTGRESS_HOST: udagramdealmeidadev.cs5ub9aav3lu.us-west-2.rds.amazonaws.com
-  URL: http://localhost:8100  
+  URL: http://a10a175664a4e42c5b5270044f2666de-48423294.us-west-2.elb.amazonaws.com:8100
 metadata:
   name: env-config
   
