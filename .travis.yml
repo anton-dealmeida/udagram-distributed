@@ -1,19 +1,44 @@
 language: minimal
-
-services: docker
-
-env:
-  - DOCKER_COMPOSE_VERSION=1.23.2
-
-before_install:
-  - docker -v && docker-compose -v
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-  - chmod +x ./kubectl
-  - sudo mv ./kubectl /usr/local/bin/kubectl
-
-install:
-  - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
+jobs:
+  include:
+    - stage: "Push to Docker Hub"
+      name: "Docker Push"
+      services: docker
+      env:
+        - DOCKER_COMPOSE_VERSION=1.23.2
+      branches:
+        only:
+          - master
+          - develop
+      before_install:
+        # Install Docker
+        - docker -v && docker-compose -v
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+        # Install Kubectl
+        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+        - chmod +x ./kubectl
+        - sudo mv ./kubectl /usr/local/bin/kubectl
+      install:
+        # Configure Kubectl to use AWS
+        - mkdir ${HOME}/.kube
+        - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+      before_script:
+        # Docker Login
+        - docker login -u $DOCKER_USERNAME -p$DOCKER_PASSWORD
+      script:
+        # Docker Build
+        - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel #build images
+        # Tag all the images with currrent branch before pushing to Docker Hub
+        - docker tag $DOCKER_USERNAME/reverseproxy $DOCKER_USERNAME/reverseproxy:$TRAVIS_BRANCH
+        - docker tag $DOCKER_USERNAME/udacity-restapi-user $DOCKER_USERNAME/udacity-restapi-user:$TRAVIS_BRANCH
+        - docker tag $DOCKER_USERNAME/udacity-restapi-feed $DOCKER_USERNAME/udacity-restapi-feed:$TRAVIS_BRANCH
+        - docker tag $DOCKER_USERNAME/udacity-frontend $DOCKER_USERNAME/udacity-frontend:$TRAVIS_BRANCH     
+      after_script:
+        # Push all images to Docker Hub
+        - docker push $DOCKER_USERNAME/reverseproxy:$TRAVIS_BRANCH
+        - docker push $DOCKER_USERNAME/udacity-restapi-user:$TRAVIS_BRANCH
+        - docker push $DOCKER_USERNAME/udacity-restapi-feed:$TRAVIS_BRANCH
+        - docker push $DOCKER_USERNAME/udacity-frontend:$TRAVIS_BRANCH
