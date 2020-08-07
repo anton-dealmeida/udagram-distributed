@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  AWS_BUCKET: udagram-dealmeida-dev
+  AWS_PROFILE: default
+  AWS_REGION: us-west-2
+  JWT_SECRET: test123
+  POSTGRESS_DB: udagramdealmeidadev
+  POSTGRESS_HOST: udagramdealmeidadev.cs5ub9aav3lu.us-west-2.rds.amazonaws.com
+  URL: http://localhost:8100  
+metadata:
+  name: env-config
+  
