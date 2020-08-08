@@ -8,6 +8,7 @@ A basic Ionic client web application which consumes the RestAPI Backend.
 2. [The RestAPI Feed Backend](/udacity-c3-restapi-feed), a Node-Express feed microservice.
 3. [The RestAPI User Backend](/udacity-c3-restapi-user), a Node-Express user microservice.
 
+> [Docker Hub Link](https://hub.docker.com/u/antoniojnr5)
 ## Getting Setup
 
 > _tip_: this frontend is designed to work with the RestAPI backends). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate.
